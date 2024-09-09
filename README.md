@@ -1,94 +1,160 @@
-<p align="center">
-  <a href="https://www.chromatic.com/">
-    <img alt="Chromatic" src="https://avatars2.githubusercontent.com/u/24584319?s=200&v=4" width="60" />
-  </a>
-</p>
+### Para Iniciar esta prueba de Storybook con React necesitaremos de lo siguiente:
 
-<h1 align="center">
-  Chromatic's Intro to Storybook React template
-</h1>
+- Instalar yarn 
+````
+npm install -g yarn
+````
+-Instalar StoryBook ( plantilla de docs storybook )
+````
+npx degit chromaui/intro-storybook-react-template taskbox
+````
+-Descargar las dependencias de yarn con:
+````
+yarn
+````
+-Iniciar StoryBook:
+````
+yarn storybook
+````
+- En la carpeta de src crearemos otra dentro de la misma, llamada "components".
+- En la carpeta de components creamos dos archivos: Task.jsx y Task.stories.jsx.
+### Vamos a ir a la carpeta de storybook
+- Y en el archivo de main.js pondras lo siguiente:
 
-This template ships with the main React and Storybook configuration files you'll need to get up and running fast.
+ ````
+/** @type { import('@storybook/react-vite').StorybookConfig } */
+const config = {
+  stories: ['../src/components/**/*.stories.@(js|jsx)'],
+   staticDirs: ['../public'],
+   addons: [
+     '@storybook/addon-links',
+     '@storybook/addon-essentials',
+     '@storybook/addon-interactions',
+   ],
+   framework: {
+     name: '@storybook/react-vite',
+     options: {},
+   },
+ };
+ export default config;
+````
+- Luego en el preview.js pondras esto:
 
-## 🚅 Quick start
+````
+import '../src/index.css';
 
-1.  **Create the application.**
+//👇 Configures Storybook to log the actions( onArchiveTask and onPinTask ) in the UI.
+/** @type { import('@storybook/react').Preview } */
+const preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/,
+      },
+    },
+  },
+};
 
-    Use [degit](https://github.com/Rich-Harris/degit) to get this template.
+export default preview;
 
-    ```shell
-    # Clone the template
-    npx degit chromaui/intro-storybook-react-template taskbox
-    ```
+````
 
-1.  **Install the dependencies.**
+####  En la carpeta de component especificamente en el archivo de Task.jsx pondras lo siguiente:
 
-    Navigate into your new site’s directory and install the necessary dependencies.
+````
+export default function Task({ task: { id, title, state }, onArchiveTask, onPinTask }) {
+    return (
+      <div className={`list-item ${state}`}>
+        <label
+          htmlFor={`archiveTask-${id}`}
+          aria-label={`archiveTask-${id}`}
+          className="checkbox"
+        >
+          <input
+            type="checkbox"
+            disabled={true}
+            name="checked"
+            id={`archiveTask-${id}`}
+            checked={state === "TASK_ARCHIVED"}
+          />
+          <span
+            className="checkbox-custom"
+            onClick={() => onArchiveTask(id)}
+          />
+        </label>
+  
+        <label htmlFor={`title-${id}`} aria-label={title} className="title">
+          <input
+            type="text"
+            value={title}
+            readOnly={true}
+            name="title"
+            id={`title-${id}`}
+            placeholder="Input title"
+          />
+        </label>
+        {state !== "TASK_ARCHIVED" && (
+          <button
+            className="pin-button"
+            onClick={() => onPinTask(id)}
+            id={`pinTask-${id}`}
+            aria-label={`pinTask-${id}`}
+            key={`pinTask-${id}`}
+          >
+            <span className={`icon-star`} />
+          </button>
+        )}
+      </div>
+    );
+  }
+  ````
+  ####  Siguiendo el mismo paso en el archivo de Task.stories.jsx pondras lo siguiente:
 
-    ```shell
-    # Navigate to the directory
-    cd taskbox/
-
-    # Install the dependencies
-    yarn
-    ```
-
-1.  **Open the source code and start editing!**
-
-    Open the `taskbox` directory in your code editor of choice and building your first component!
-
-1.  **Browse your stories!**
-
-    Run `yarn storybook` to see your component's stories at `http://localhost:6006`
-
-## 🔎 What's inside?
-
-A quick look at the top-level files and directories included with this template.
-
-    .
-    ├── .storybook
-    ├── node_modules
-    ├── public
-    ├── src
-    ├── .eslintrc.cjs
-    ├── .gitignore
-    ├── .index.html
-    ├── LICENSE
-    ├── package.json
-    ├── yarn.lock
-    ├── vite.config.js
-    └── README.md
-
-1.  **`.storybook`**: This directory contains Storybook's [configuration](https://storybook.js.org/docs/react/configure/overview) files.
-
-2.  **`node_modules`**: This directory contains all of the modules of code that your project depends on (npm packages).
-
-3.  **`public`**: This directory will contain the development and production build of the site.
-
-4.  **`src`**: This directory will contain all of the code related to what you will see on your application.
-
-5.  **`.eslintrc.cjs`**: This file is the configuration file for [ESLint](https://eslint.org/), a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
-
-6.  **`.gitignore`**: This file tells git which files it should not track or maintain during the development process of your project.
-
-7.  **`.index.html`**: This is the HTML page that is served when generating a development or production build.
-
-8.  **`LICENSE`**: The template is licensed under the MIT licence.
-
-9.  **`package.json`**: Standard manifest file for Node.js projects, which typically includes project specific metadata (such as the project's name, the author among other information). It's based on this file that npm will know which packages are necessary to the project.
-
-10. **`yarn.lock`**: This is an automatically generated file based on the exact versions of your npm dependencies that were installed for your project. **(Do not change it manually).**
-
-11. **`vite.config.js`**: This is the configuration file for [Vite](https://vitejs.dev/), a build tool that aims to provide a faster and leaner development experience for modern web projects.
-
-12. **`README.md`**: A text file containing useful reference information about the project.
-
-## Contribute
-
-If you encounter an issue with the template, we encourage you to open an issue in this template's repository.
-
-## Learning Storybook
-
-1. Read our introductory tutorial at [Learn Storybook](https://storybook.js.org/tutorials/intro-to-storybook/react/en/get-started/).
-2. Learn how to transform your component libraries into design systems in our [Design Systems for Developers](https://storybook.js.org/tutorials/design-systems-for-developers/) tutorial.
-3. See our official documentation at [Storybook](https://storybook.js.org/).
+  ````
+  export default function Task({ task: { id, title, state }, onArchiveTask, onPinTask }) {
+    return (
+      <div className={`list-item ${state}`}>
+        <label
+          htmlFor={`archiveTask-${id}`}
+          aria-label={`archiveTask-${id}`}
+          className="checkbox"
+        >
+          <input
+            type="checkbox"
+            disabled={true}
+            name="checked"
+            id={`archiveTask-${id}`}
+            checked={state === "TASK_ARCHIVED"}
+          />
+          <span
+            className="checkbox-custom"
+            onClick={() => onArchiveTask(id)}
+          />
+        </label>
+  
+        <label htmlFor={`title-${id}`} aria-label={title} className="title">
+          <input
+            type="text"
+            value={title}
+            readOnly={true}
+            name="title"
+            id={`title-${id}`}
+            placeholder="Input title"
+          />
+        </label>
+        {state !== "TASK_ARCHIVED" && (
+          <button
+            className="pin-button"
+            onClick={() => onPinTask(id)}
+            id={`pinTask-${id}`}
+            aria-label={`pinTask-${id}`}
+            key={`pinTask-${id}`}
+          >
+            <span className={`icon-star`} />
+          </button>
+        )}
+      </div>
+    );
+  }
+  ````
