@@ -4,15 +4,15 @@
 ````
 npm install -g yarn
 ````
--Instalar StoryBook ( plantilla de docs storybook )
+- Instalar StoryBook ( plantilla de docs storybook )
 ````
 npx degit chromaui/intro-storybook-react-template taskbox
 ````
--Descargar las dependencias de yarn con:
+- Descargar las dependencias de yarn con:
 ````
 yarn
 ````
--Iniciar StoryBook:
+- Iniciar StoryBook:
 ````
 yarn storybook
 ````
