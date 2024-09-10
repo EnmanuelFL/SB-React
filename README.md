@@ -112,49 +112,52 @@ export default function Task({ task: { id, title, state }, onArchiveTask, onPinT
   ####  Siguiendo el mismo paso en el archivo de Task.stories.jsx pondras lo siguiente:
 
   ````
-  export default function Task({ task: { id, title, state }, onArchiveTask, onPinTask }) {
-    return (
-      <div className={`list-item ${state}`}>
-        <label
-          htmlFor={`archiveTask-${id}`}
-          aria-label={`archiveTask-${id}`}
-          className="checkbox"
-        >
-          <input
-            type="checkbox"
-            disabled={true}
-            name="checked"
-            id={`archiveTask-${id}`}
-            checked={state === "TASK_ARCHIVED"}
-          />
-          <span
-            className="checkbox-custom"
-            onClick={() => onArchiveTask(id)}
-          />
-        </label>
-  
-        <label htmlFor={`title-${id}`} aria-label={title} className="title">
-          <input
-            type="text"
-            value={title}
-            readOnly={true}
-            name="title"
-            id={`title-${id}`}
-            placeholder="Input title"
-          />
-        </label>
-        {state !== "TASK_ARCHIVED" && (
-          <button
-            className="pin-button"
-            onClick={() => onPinTask(id)}
-            id={`pinTask-${id}`}
-            aria-label={`pinTask-${id}`}
-            key={`pinTask-${id}`}
-          >
-            <span className={`icon-star`} />
-          </button>
-        )}
-      </div>
-    );
-  }
+
+import { fn } from "@storybook/test";
+
+import Task from './Task';
+
+export const ActionsData = {
+  onArchiveTask: fn(),
+  onPinTask: fn(),
+};
+
+export default {
+  component: Task,
+  title: 'Task',
+  tags: ['autodocs'],
+  //👇 Our exports that end in "Data" are not stories.
+  excludeStories: /.*Data$/,
+  args: {
+    ...ActionsData,
+  },
+};
+
+export const Default = {
+  args: {
+    task: {
+      id: '1',
+      title: 'Test Task',
+      state: 'TASK_INBOX',
+    },
+  },
+};
+
+export const Pinned = {
+  args: {
+    task: {
+      ...Default.args.task,
+      state: 'TASK_PINNED',
+    },
+  },
+};
+
+export const Archived = {
+  args: {
+    task: {
+      ...Default.args.task,
+      state: 'TASK_ARCHIVED',
+    },
+  },
+};
   ````
